@@ -11,7 +11,7 @@ package chessBoard;
  *
  * @author Aravind.Ramachandran
  */
-public class Rook {
+public class Rook extends Piece {
     public boolean checkVlaidityOfMove(int strow,int stcol,int enrow,int encol)
     {
         if(strow==enrow||stcol==encol)

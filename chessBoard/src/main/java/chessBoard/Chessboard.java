@@ -11,19 +11,19 @@ public class Chessboard {
     char chessboard[][];     
     Moves m;
     char nextPlayer='W';
-    Rook rok ;    //generating a new Rook object
+    Piecehandler p;
     public  Chessboard()
     {
         chessboard = new char [8][8];
         initalizeBoard();
+        p = new Piecehandler();
         m = new Moves();
-        rok = new Rook();
     }
-    public Chessboard(char board[][])   //consructor to set predefined board
+    public Chessboard(char board[][])   //Constructor to set predefined board
     {
         chessboard=board;
          m = new Moves();
-         rok = new Rook();
+         p = new Piecehandler();
     }
    private void initalizeBoard()
     {
@@ -62,39 +62,42 @@ public class Chessboard {
                 chessboard[i+6][j]='p';
             }
           }
+   		  public boolean addPieceHandler(Piece newPiece,char c)
+   		  {
+   			  return p.addPiece(newPiece, c);
+   		  }
           public boolean submitBoardMove(char player,int strow,int stcol,int enrow,int encol)    
           {
+        	  
               if(player==nextPlayer)//handling player turns
               {
+            	
                 if((player =='W' && Character.isLowerCase(chessboard[strow][stcol]))||(player == 'B' && Character.isUpperCase(chessboard[strow][stcol])))//check if move turn is correct and user trying to move opponents peice
                 {
+                
                    return false;
                 }
-                switch(Character.toLowerCase(chessboard[strow][stcol]))  
+               if(p.checkMove(Character.toLowerCase(chessboard[strow][stcol]), strow, stcol, enrow, encol, chessboard))    //move is valid then
                 {
-                    case 'r':   if(rok.checkMove(strow, stcol, enrow, encol, chessboard))    //move is valid then
-                                  {
-                                      if(nextPlayer=='W')   //fliping player after valid move
-                                      {
-                                          nextPlayer='B';
-                                      }
-                                      else
-                                      {
-                                          nextPlayer='W';
-                                      }
-                                      String mv="("+strow+","+stcol+") -> ("+enrow+","+encol+") peice:"+chessboard[strow][stcol];
-                                      chessboard[enrow][encol]=chessboard[strow][stcol];  //enact the move in board
-                                      chessboard[strow][stcol]='\0'; 
-                                      m.addMove( player,mv);    //add the move to players move list          
-                                      return true;
-                                  };
-
-                                  break;
+                    if(nextPlayer=='W')   //flip player after valid move
+                    {
+                        nextPlayer='B';
+                    }
+                    else
+                    {
+                        nextPlayer='W';
+                    }
+                    String mv="("+strow+","+stcol+") -> ("+enrow+","+encol+") peice:"+chessboard[strow][stcol];
+                    chessboard[enrow][encol]=chessboard[strow][stcol];  //enact the move in board
+                    chessboard[strow][stcol]='\0'; 
+                     m.addMove( player,mv);    //add the move to players move list          
+                    return true;
+                  };
                 }
-              }
+    
               return false;
           }
-          /*Move retrival functions*/
+          /*Move retrieval functions*/
           public List<String> getMoves(char player)
           {
               return m.getAllMoves(player);
@@ -105,12 +108,12 @@ public class Chessboard {
           }
           
           
-          public char [][] GetBoard()//retrive the current board represented in a matric board status
+          public char [][] GetBoard()//Retrieve the current board represented in a matrix board status
           {
               return chessboard;
           }
           
-          public void DisplayChessBoard()   //displays the matrix represnetation of the move
+          public void DisplayChessBoard()   //displays the matrix representation of the move
           {
               for(int i=0;i<8;i++)
               {
